@@ -17,6 +17,7 @@
 		<Square
 			found={found.includes(emoji)}
 			selected={a === i || b == i}
+			group={grid.indexOf(emoji) === i ? 'a' : 'b'}
 			on:click={(event) => {
 				clearTimeout(reset_timeout);
 				if (a === -1 && b === -1) {
@@ -50,8 +51,9 @@
 	.grid {
 		height: 100%;
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		grid-template-rows: repeat(4, 1fr);
+		grid-template-columns: repeat(var(--size), 1fr);
+		grid-template-rows: repeat(var(--size), 1fr);
 		grid-gap: 0.5em;
+		perspective: 100vw;
 	}
 </style>

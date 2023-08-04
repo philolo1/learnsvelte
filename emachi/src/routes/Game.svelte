@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import Countdown from './Countdown.svelte';
 	import Found from './Found.svelte';
 	import Grid from './Grid.svelte';
@@ -13,7 +13,24 @@
 	let found: string[] = [];
 	let remaining = level.duration;
 	let duration = level.duration;
-	let playing = true;
+	let playing = false;
+
+	const dispatch = createEventDispatcher();
+
+	export function start(level: Level) {
+		size = level.size;
+		grid = createGrid(level);
+		found = [];
+		remaining = duration = level.duration;
+
+		resume();
+		dispatch('play');
+	}
+
+	export function resume() {
+		playing = true;
+		countdown();
+	}
 
 	function createGrid(level: Level): string[] {
 		let copy = level.emojis.slice();
@@ -52,6 +69,7 @@
 
 			if (remaining <= 0) {
 				playing = false;
+				dispatch('lost');
 			}
 		}
 		loop();
@@ -62,18 +80,36 @@
 	});
 </script>
 
-<div class="game">
+<div class="game" style="--size:{size}">
 	<div class="info">
-		<Countdown {duration} {remaining} />
-	</div>
-	<div class="grid-container">
-		<Grid
-			{grid}
-			{found}
-			on:found={(e) => {
-				found = [...found, e.detail.emoji];
+		<Countdown
+			{playing}
+			{duration}
+			{remaining}
+			on:click={() => {
+				playing = !playing;
+				if (playing) {
+					countdown();
+				} else {
+					dispatch('pause');
+				}
 			}}
 		/>
+	</div>
+	<div class="grid-container" class:no-click={!playing}>
+		{#key grid}
+			<Grid
+				{grid}
+				{found}
+				on:found={(e) => {
+					found = [...found, e.detail.emoji];
+
+					if (found.length === (size * size) / 2) {
+						dispatch('win');
+					}
+				}}
+			/>
+		{/key}
 	</div>
 	<div class="info">
 		<Found {found} />
@@ -87,6 +123,9 @@
 </div>
 
 <style>
+	.no-click {
+		pointer-events: none;
+	}
 	.game {
 		display: flex;
 		flex-direction: column;

@@ -7,7 +7,7 @@ export default {
         accent: 'hsl(1, 59%, 50%)',
       },
       padding: {
-       'col' : 'var(--col)',
+       'side' : 'var(--side)',
       },
       maxWidth: {
        'col' : 'var(--col)',

@@ -3,11 +3,9 @@
 </script>
 
 <nav
-	class="flex w-full h-12 bg-yellow-50 items-center justify-between max-w-col py-0 px-col text-accent"
+	class="flex w-full h-12 m-auto bg-yellow-50 items-center justify-between max-w-col py-0 px-side text-accent"
 >
 	<a href="/"> SvelteFlix</a>
-
-	<span class="bg-green-50 h-20 w-40" />
 
 	<div>
 		<a href="/search">Search</a>
